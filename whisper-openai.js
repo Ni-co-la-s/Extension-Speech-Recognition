@@ -64,7 +64,7 @@ class OpenAISttProvider {
         // It's not a JSON, let fetch set the content type
         const headers = getRequestHeaders();
         delete headers['Content-Type'];
-        console.debug('Model STT: ', this.settings.model)
+        console.debug(DEBUG_PREFIX + 'Model STT: ', this.settings.model)
 
         const apiResult = await fetch('/api/openai/transcribe-audio', {
             method: 'POST',
