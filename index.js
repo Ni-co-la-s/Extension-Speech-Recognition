@@ -7,7 +7,7 @@ import { saveSettingsDebounced, sendMessageAsUser } from '../../../../script.js'
 import { getContext, extension_settings, ModuleWorkerWrapper } from '../../../extensions.js';
 import { VoskSttProvider } from './vosk.js';
 import { WhisperExtrasSttProvider } from './whisper-extras.js';
-import { WhisperOpenAISttProvider } from './whisper-openai.js';
+import { OpenAISttProvider } from './whisper-openai.js';
 import { WhisperLocalSttProvider } from './whisper-local.js';
 import { BrowserSttProvider } from './browser.js';
 import { StreamingSttProvider } from './streaming.js';
@@ -27,7 +27,7 @@ let sttProviders = {
     Browser: BrowserSttProvider,
     'KoboldCpp': KoboldCppSttProvider,
     'Whisper (Extras)': WhisperExtrasSttProvider,
-    'Whisper (OpenAI)': WhisperOpenAISttProvider,
+    'OpenAI': OpenAISttProvider,
     'Whisper (Local)': WhisperLocalSttProvider,
     Vosk: VoskSttProvider,
     Streaming: StreamingSttProvider,
@@ -335,7 +335,7 @@ function loadSttProvider(provider) {
         $('#microphone_button').show();
     }
 
-    const nonStreamingProviders = ['Vosk', 'Whisper (OpenAI)', 'Whisper (Extras)', 'Whisper (Local)', 'KoboldCpp'];
+    const nonStreamingProviders = ['Vosk', 'OpenAI', 'Whisper (Extras)', 'Whisper (Local)', 'KoboldCpp'];
     if (nonStreamingProviders.includes(sttProviderName)) {
         sttProvider.loadSettings(extension_settings.speech_recognition[sttProviderName]);
         loadNavigatorAudioRecording();
@@ -435,6 +435,15 @@ function loadSettings() {
             extension_settings.speech_recognition[key] = defaultSettings[key];
         }
     }
+
+
+    if (extension_settings.speech_recognition.currentProvider === 'Whisper (OpenAI)') {
+        extension_settings.speech_recognition.currentProvider = 'OpenAI';
+    }
+    if (extension_settings.speech_recognition['Whisper (OpenAI)'] && !extension_settings.speech_recognition['OpenAI']) {
+        extension_settings.speech_recognition['OpenAI'] = extension_settings.speech_recognition['Whisper (OpenAI)'];
+    }
+
     $('#speech_recognition_enabled').prop('checked', extension_settings.speech_recognition.enabled);
     $('#speech_recognition_message_mode').val(extension_settings.speech_recognition.messageMode);
 
