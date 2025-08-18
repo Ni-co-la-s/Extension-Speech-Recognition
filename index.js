@@ -279,7 +279,7 @@ function loadNavigatorAudioRecording() {
 
                 // If voice activation is OFF, release mic after each recording
                 if (!extension_settings.speech_recognition.voiceActivationEnabled) {
-                    try { mediaRecorder.stream.getTracks().forEach(t => t.stop()); } catch { }
+                    try { mediaRecorder.stream.getTracks().forEach(t => t.stop()); } catch (e) { console.error('Error stopping media stream tracks:', e); }
                     mediaRecorder = null;
 
                     // set lazy handler again for next click
