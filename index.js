@@ -206,6 +206,18 @@ function loadNavigatorAudioRecording() {
     if (navigator.mediaDevices.getUserMedia) {
         console.debug(DEBUG_PREFIX + ' getUserMedia supported by browser.');
         const micButton = $('#microphone_button');
+        const micClickHandler = function () {
+            micButton.off('click');
+            navigator.mediaDevices.getUserMedia(constraints).then(function (s) {
+                onSuccess(s);
+                if (!audioRecording) {
+                    mediaRecorder.start();
+                    console.debug(DEBUG_PREFIX + 'recorder started, state: ' + mediaRecorder.state);
+                    audioRecording = true;
+                    activateMicIcon(micButton);
+                }
+            }, onError);
+        };
 
         let onSuccess = function (stream) {
             const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
@@ -279,24 +291,13 @@ function loadNavigatorAudioRecording() {
 
                 // If voice activation is OFF, release mic after each recording
                 if (!extension_settings.speech_recognition.voiceActivationEnabled) {
-                    try { mediaRecorder.stream.getTracks().forEach(t => t.stop()); } catch (e) { console.error('Error stopping media stream tracks:', e); }
+                    try {
+                        mediaRecorder.stream.getTracks().forEach(t => t.stop());
+                    } catch (e) {
+                        console.error(DEBUG_PREFIX + 'error stopping media stream tracks:', e);
+                    }
                     mediaRecorder = null;
-
-                    // set lazy handler again for next click
-                    micButton.off('click').on('click', function () {
-                        micButton.off('click');
-                        navigator.mediaDevices.getUserMedia(constraints).then(function (s) {
-                            onSuccess(s);
-                            // start immediately
-                            if (!audioRecording) {
-                                mediaRecorder.start();
-                                console.debug(DEBUG_PREFIX + mediaRecorder.state);
-                                console.debug(DEBUG_PREFIX + 'recorder started');
-                                audioRecording = true;
-                                activateMicIcon(micButton);
-                            }
-                        }, onError);
-                    });
+                    micButton.off('click').on('click', micClickHandler);
                 }
             };
 
@@ -313,20 +314,7 @@ function loadNavigatorAudioRecording() {
         if (extension_settings.speech_recognition.voiceActivationEnabled) {
             navigator.mediaDevices.getUserMedia(constraints).then(onSuccess, onError);
         } else {
-            // lazy-open on first click
-            micButton.off('click').on('click', function () {
-                micButton.off('click'); // prevent double init
-                navigator.mediaDevices.getUserMedia(constraints).then(function (s) {
-                    onSuccess(s);
-                    if (!audioRecording) {
-                        mediaRecorder.start();
-                        console.debug(DEBUG_PREFIX + mediaRecorder.state);
-                        console.debug(DEBUG_PREFIX + 'recorder started');
-                        audioRecording = true;
-                        activateMicIcon(micButton);
-                    }
-                }, onError);
-            });
+            micButton.off('click').on('click', micClickHandler);
         }
 
     } else {
