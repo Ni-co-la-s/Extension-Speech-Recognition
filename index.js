@@ -524,7 +524,7 @@ async function onMessageMappingEnabledClick() {
 }
 
 function onVoiceActivationEnabledChange() {
-    const enabled = $('#speech_recognition_voice_activation_enabled').prop('checked');
+    const enabled = !!$('#speech_recognition_voice_activation_enabled').prop('checked');
     extension_settings.speech_recognition.voiceActivationEnabled = enabled;
 
     const micButton = $('#microphone_button');
@@ -535,7 +535,11 @@ function onVoiceActivationEnabledChange() {
     } else {
         if (!audioRecording) {
             if (mediaRecorder && mediaRecorder.stream) {
-                try { mediaRecorder.stream.getTracks().forEach(t => t.stop()); } catch { }
+                try {
+                    mediaRecorder.stream.getTracks().forEach(t => t.stop());
+                } catch (e) {
+                    console.error(DEBUG_PREFIX + 'error stopping media stream tracks:', e);
+                }
             }
             mediaRecorder = null;
 
