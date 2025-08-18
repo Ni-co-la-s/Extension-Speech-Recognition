@@ -436,7 +436,6 @@ function loadSettings() {
         }
     }
 
-
     if (extension_settings.speech_recognition.currentProvider === 'Whisper (OpenAI)') {
         extension_settings.speech_recognition.currentProvider = 'OpenAI';
     }

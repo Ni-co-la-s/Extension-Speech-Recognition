@@ -16,9 +16,9 @@ class OpenAISttProvider {
         <div class="flex-container flexFlowColumn" style="margin-top:8px">
             <label for="openai_model">OpenAI Transcribe model</label>
             <select id="openai_model">
-            <option value="gpt-4o-mini-transcribe">gpt-4o-mini-transcribe</option>
-            <option value="gpt-4o-transcribe">gpt-4o-transcribe</option>
-            <option value="whisper-1">whisper-1</option>
+                <option value="gpt-4o-mini-transcribe">gpt-4o-mini-transcribe</option>
+                <option value="gpt-4o-transcribe">gpt-4o-transcribe</option>
+                <option value="whisper-1">whisper-1</option>
             </select>
         </div>
         `;
