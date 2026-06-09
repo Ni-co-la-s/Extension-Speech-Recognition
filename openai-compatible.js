@@ -95,6 +95,17 @@ class OpenAICompatibleSttProvider {
         return headers;
     }
 
+    getLanguageName() {
+        if (!this.settings.language) {
+            return '';
+        }
+
+        const selectedOptionText = $('#speech_recognition_language option:selected').text();
+        return selectedOptionText && selectedOptionText !== '-- Automatic --'
+            ? selectedOptionText
+            : this.settings.language;
+    }
+
     getTextFromJson(data) {
         if (!data) {
             return '';
@@ -197,7 +208,7 @@ class OpenAICompatibleSttProvider {
         requestData.append('response_format', 'json');
 
         if (this.settings.language) {
-            requestData.append('language', this.settings.language);
+            requestData.append('language', this.getLanguageName());
         }
 
         if (this.settings.streaming) {
