@@ -13,6 +13,7 @@ import { BrowserSttProvider } from './browser.js';
 import { StreamingSttProvider } from './streaming.js';
 import { KoboldCppSttProvider } from './koboldcpp.js';
 import { GroqSttProvider } from './groq.js';
+import { OpenAICompatibleSttProvider } from './openai-compatible.js';
 import { VAD } from './vad.js'
 import { MistralSttProvider } from './mistral.js';
 import { ChutesSttProvider } from './chutes.js';
@@ -39,6 +40,7 @@ let sttProviders = {
     'Whisper (Extras)': WhisperExtrasSttProvider,
     'Whisper (Local)': WhisperLocalSttProvider,
     'Z.AI': ZaiSttProvider,
+    'OpenAI Compatible': OpenAICompatibleSttProvider,
     Vosk: VoskSttProvider,
     Streaming: StreamingSttProvider,
 };
